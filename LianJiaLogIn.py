@@ -20,9 +20,10 @@ opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cookie))
 urllib2.install_opener(opener)
 
 
-home_url = 'http://bj.lianjia.com/'
-auth_url = 'https://passport.lianjia.com/cas/login?service=http%3A%2F%2Fbj.lianjia.com%2F'
-chengjiao_url = 'http://bj.lianjia.com/chengjiao/'
+home_url = 'http://sz.lianjia.com/'
+
+auth_url = 'https://passport.lianjia.com/cas/login?service=http%3A%2F%2Fsz.lianjia.com%2F'
+chengjiao_url = 'http://sz.lianjia.com/chengjiao/'
  
  
 headers = {
@@ -39,7 +40,7 @@ headers = {
 }
 
 # 获取lianjia_uuid
-req = urllib2.Request('http://bj.lianjia.com/')
+req = urllib2.Request('http://sz.lianjia.com/')
 opener.open(req)
 # 初始化表单
 req = urllib2.Request(auth_url, headers=headers)
@@ -62,8 +63,8 @@ execution = pattern.findall(html_content)[0]
 
 # data
 data = {
-    'username': 'your username', #替换为自己账户的用户名
-    'password': 'your password', #替换为自己账户的密码
+    'username': '18718560903', #替换为自己账户的用户名
+    'password': '123456789ozg', #替换为自己账户的密码
     'execution': execution,
     '_eventId': 'submit',
     'lt': lt,
@@ -85,7 +86,7 @@ headers = {
     'Host': 'passport.lianjia.com',
     'Origin': 'https://passport.lianjia.com',
     'Pragma': 'no-cache',
-    'Referer': 'https://passport.lianjia.com/cas/login?service=http%3A%2F%2Fbj.lianjia.com%2F',
+    'Referer': 'https://passport.lianjia.com/cas/login?service=http%3A%2F%2Fsz.lianjia.com%2F',
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/47.0.2526.111 Safari/537.36',
     'Upgrade-Insecure-Requests': '1',
     'X-Requested-With': 'XMLHttpRequest',

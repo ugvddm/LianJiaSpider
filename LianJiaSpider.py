@@ -16,7 +16,7 @@ reload(sys)
 sys.setdefaultencoding("utf-8")
 
 #登录，不登录不能爬取三个月之内的数据
-import LianJiaLogIn
+#import LianJiaLogIn
 
 
 #Some User Agents
@@ -35,8 +35,8 @@ hds=[{'User-Agent':'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) 
     {'User-Agent':'Opera/9.80 (Windows NT 6.1; U; en) Presto/2.8.131 Version/11.11'}]
     
 
-#北京区域列表
-regions=[u"东城",u"西城",u"朝阳",u"海淀",u"丰台",u"石景山","通州",u"昌平",u"大兴",u"亦庄开发区",u"顺义",u"房山",u"门头沟",u"平谷",u"怀柔",u"密云",u"延庆",u"燕郊"]
+# 深圳区域列表
+regions=[u"宝安",u"南山", u"罗湖", u"福田", u"盐田", u"龙岗", u"龙华", u"光明", u"坪山", u"大鹏" ]
 
 
 lock = threading.Lock()
@@ -136,7 +136,8 @@ def gen_chengjiao_insert_command(info_dict):
     return command
 
 
-def xiaoqu_spider(db_xq,url_page=u"http://bj.lianjia.com/xiaoqu/pg1rs%E6%98%8C%E5%B9%B3/"):
+def xiaoqu_spider(db_xq, url_page=u"http://sz.lianjia.com/xiaoqu/pg1rs%E6%98"
+                                  u"%8C%E5%B9%B3/"):
     """
     爬取页面链接中的小区信息
     """
@@ -152,7 +153,7 @@ def xiaoqu_spider(db_xq,url_page=u"http://bj.lianjia.com/xiaoqu/pg1rs%E6%98%8C%E
         print e
         exit(-1)
     
-    xiaoqu_list=soup.findAll('div',{'class':'info-panel'})
+    xiaoqu_list=soup.findAll('div',{'class':'houseInfo'})
     for xq in xiaoqu_list:
         info_dict={}
         info_dict.update({u'小区名称':xq.find('a').text})
@@ -164,6 +165,7 @@ def xiaoqu_spider(db_xq,url_page=u"http://bj.lianjia.com/xiaoqu/pg1rs%E6%98%8C%E
             info_dict.update({u'小区域':info[1]})
             info_dict.update({u'小区户型':info[2]})
             info_dict.update({u'建造时间':info[3][:4]})
+        print info_dict
         command=gen_xiaoqu_insert_command(info_dict)
         db_xq.execute(command,1)
 
@@ -172,7 +174,8 @@ def do_xiaoqu_spider(db_xq,region=u"昌平"):
     """
     爬取大区域中的所有小区信息
     """
-    url=u"http://bj.lianjia.com/xiaoqu/rs"+region+"/"
+    # import pdb;pdb.set_trace()
+    url=u"http://sz.lianjia.com/xiaoqu/rs"+region+"/"
     try:
         req = urllib2.Request(url,headers=hds[random.randint(0,len(hds)-1)])
         source_code = urllib2.urlopen(req,timeout=5).read()
@@ -189,18 +192,21 @@ def do_xiaoqu_spider(db_xq,region=u"昌平"):
     total_pages=d['totalPage']
     
     threads=[]
+    import pdb;pdb.set_trace()
     for i in range(total_pages):
-        url_page=u"http://bj.lianjia.com/xiaoqu/pg%drs%s/" % (i+1,region)
-        t=threading.Thread(target=xiaoqu_spider,args=(db_xq,url_page))
-        threads.append(t)
-    for t in threads:
-        t.start()
-    for t in threads:
-        t.join()
+        url_page=u"http://sz.lianjia.com/xiaoqu/pg%drs%s/" % (i+1,region)
+        # t=threading.Thread(target=xiaoqu_spider, args=(db_xq,url_page))
+        # threads.append(t)
+        xiaoqu_spider(db_xq, url_page)
+
+    # for t in threads:
+    #     t.start()
+    # for t in threads:
+    #     t.join()
     print u"爬下了 %s 区全部的小区信息" % region
 
 
-def chengjiao_spider(db_cj,url_page=u"http://bj.lianjia.com/chengjiao/pg1rs%E5%86%A0%E5%BA%AD%E5%9B%AD"):
+def chengjiao_spider(db_cj,url_page=u"http://sz.lianjia.com/chengjiao/pg1rs%E5%86%A0%E5%BA%AD%E5%9B%AD"):
     """
     爬取页面链接中的成交记录
     """
@@ -261,7 +267,7 @@ def xiaoqu_chengjiao_spider(db_cj,xq_name=u"冠庭园"):
     """
     爬取小区成交记录
     """
-    url=u"http://bj.lianjia.com/chengjiao/rs"+urllib2.quote(xq_name)+"/"
+    url=u"http://sz.lianjia.com/chengjiao/rs"+urllib2.quote(xq_name)+"/"
     try:
         req = urllib2.Request(url,headers=hds[random.randint(0,len(hds)-1)])
         source_code = urllib2.urlopen(req,timeout=10).read()
@@ -284,7 +290,7 @@ def xiaoqu_chengjiao_spider(db_cj,xq_name=u"冠庭园"):
     
     threads=[]
     for i in range(total_pages):
-        url_page=u"http://bj.lianjia.com/chengjiao/pg%drs%s/" % (i+1,urllib2.quote(xq_name))
+        url_page=u"http://sz.lianjia.com/chengjiao/pg%drs%s/" % (i+1,urllib2.quote(xq_name))
         t=threading.Thread(target=chengjiao_spider,args=(db_cj,url_page))
         threads.append(t)
     for t in threads:
