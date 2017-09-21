@@ -63,8 +63,8 @@ execution = pattern.findall(html_content)[0]
 
 # data
 data = {
-    'username': '18718560903', #替换为自己账户的用户名
-    'password': '123456789ozg', #替换为自己账户的密码
+    'username': '', #替换为自己账户的用户名
+    'password': '', #替换为自己账户的密码
     'execution': execution,
     '_eventId': 'submit',
     'lt': lt,
